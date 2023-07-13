@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 login();
               },
-              child: Text('register'),
+              child: Text('Register'),
             ),
           ],
         ),
