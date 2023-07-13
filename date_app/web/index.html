@@ -55,5 +55,28 @@
       });
     });
   </script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2kW6prCXJeb7oILuPv_Kg0v5lrGZxANI",
+      authDomain: "calendarapp-aac2e.firebaseapp.com",
+      projectId: "calendarapp-aac2e",
+      storageBucket: "calendarapp-aac2e.appspot.com",
+      messagingSenderId: "146694895587",
+      appId: "1:146694895587:web:601e0d87e12c5471bf12d6",
+      measurementId: "G-X9R55WK3BP"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 </html>
