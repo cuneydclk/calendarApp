@@ -13,9 +13,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> login() async {
+  Future<void> register() async {
     final String apiUrl =
-        'http://localhost:3000/registration'; // Corrected API URL
+        'https://calenderapp.onrender.com/registration'; // Corrected API URL
     final Map<String, dynamic> requestData = {
       'email': emailController.text,
       'password': passwordController.text,
@@ -41,6 +41,40 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         // User registration failed
         print('User registration failed');
+      }
+    } else {
+      // Failed to connect to the server
+      print('Failed to connect to the server');
+    }
+  }
+
+  Future<void> login() async {
+    final String apiUrl = 'https://calenderapp.onrender.com/login';
+    final Map<String, dynamic> requestData = {
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      if (responseData['status'] == true) {
+        // User login successful
+        print(responseData['success']);
+
+        // Navigate to the main page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+        );
+      } else {
+        // User login failed
+        print('User login failed');
       }
     } else {
       // Failed to connect to the server
@@ -76,9 +110,16 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                login();
+                register();
               },
               child: Text('Register'),
+            ),
+            SizedBox(height: 10.0), // Added SizedBox to add spacing
+            ElevatedButton(
+              onPressed: () {
+                login();
+              },
+              child: Text('Login'),
             ),
           ],
         ),
