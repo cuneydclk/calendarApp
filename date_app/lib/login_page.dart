@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'main_page.dart';
@@ -12,6 +13,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    //
+    super.initState();
+    initSharedPref();
+  }
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   Future<void> register() async {
     final String apiUrl =
@@ -32,12 +46,6 @@ class _LoginPageState extends State<LoginPage> {
       if (responseData['status'] == true) {
         // User registration successful
         print(responseData['success']);
-
-        // Navigate to the main page
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()),
-        );
       } else {
         // User registration failed
         print('User registration failed');
@@ -66,6 +74,9 @@ class _LoginPageState extends State<LoginPage> {
       if (responseData['status'] == true) {
         // User login successful
         print(responseData['success']);
+
+        var myToken = responseData['token'];
+        prefs.setString('token', myToken);
 
         // Navigate to the main page
         Navigator.pushReplacement(
@@ -108,18 +119,26 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
             ),
             SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                register();
-              },
-              child: Text('Register'),
-            ),
-            SizedBox(height: 10.0), // Added SizedBox to add spacing
-            ElevatedButton(
-              onPressed: () {
-                login();
-              },
-              child: Text('Login'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    login();
+                  },
+                  child: Text('Login'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    register();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                  ),
+                  child: Text('Register'),
+                ),
+              ],
             ),
           ],
         ),

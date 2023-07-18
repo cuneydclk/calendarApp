@@ -23,6 +23,7 @@ exports.login = async(req, res, next)=>{
         if(!user){
 
             throw new Error("User dont exist");
+            
         }
         
         const isMatch = await user.comparePassword(password);

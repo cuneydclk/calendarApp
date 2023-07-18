@@ -1,4 +1,4 @@
-const EventService= require("../services/event.service"); 
+const EventService = require("../services/event.service"); 
 
 exports.saveEvent = async(req, res, next)=>{
 
