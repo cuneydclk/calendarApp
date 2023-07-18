@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
         // Navigate to the main page
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainPage()),
+          MaterialPageRoute(builder: (context) => MainPage(token: myToken)),
         );
       } else {
         // User login failed

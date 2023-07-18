@@ -3,8 +3,13 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class MainPage extends StatefulWidget {
+  final token;
+
+  const MainPage({@required this.token, Key? key}) : super(key: key);
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -17,6 +22,15 @@ class _MainPageState extends State<MainPage> {
   String? _eventTitle;
   String? _startTime;
   String? _finishTime;
+
+  late String email;
+
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    email = jwtDecodedToken['email'];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +145,7 @@ class _MainPageState extends State<MainPage> {
   void _saveEvent() async {
     // Prepare the request payload
     final payload = jsonEncode({
-      "email": "example6@gmail.com",
+      "email": email,
       "eventTitle": _eventTitle,
       "startTime": _startTime,
       "finishTime": _finishTime,
