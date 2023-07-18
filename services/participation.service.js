@@ -4,17 +4,20 @@ const UserModel = require('../model/user.model');
 class ParticipationService {
   static async getUnapprovedUsers(eventID) {
     try {
-      // Find all participations for the given eventID
-      const participations = await ParticipationModel.find({ eventID });
+      // Find all participations for the given eventID with isApproved set to false
+      const unapprovedParticipations = await ParticipationModel.find({
+        eventID,
+        isApproved: false,
+      });
 
-      // Get the IDs of all approved participants
-      const approvedUserIDs = participations
-        .filter(participation => participation.isApproved)
-        .map(participation => participation.userID);
+      // Get the userIDs of the unapproved participations
+      const unapprovedUserIDs = unapprovedParticipations.map(
+        participation => participation.userID
+      );
 
-      // Find users who haven't been approved (based on their IDs)
+      // Find the unapproved users based on their IDs
       const unapprovedUsers = await UserModel.find({
-        _id: { $nin: approvedUserIDs },
+        _id: { $in: unapprovedUserIDs },
       });
 
       return unapprovedUsers;
