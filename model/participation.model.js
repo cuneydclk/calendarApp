@@ -5,11 +5,13 @@ const { Schema } = mongoose;
 
 const participationSchema = new Schema({
   userID: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   eventID: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Event',
     required: true,
   },
   isApproved: {
