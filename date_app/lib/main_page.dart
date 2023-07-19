@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_page.dart';
+
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -37,6 +40,12 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Main Page'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _logout,
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -78,6 +87,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _showAddEventDialog() {
+    String? _participantEmails;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -114,6 +125,16 @@ class _MainPageState extends State<MainPage> {
                 onChanged: (value) {
                   setState(() {
                     _finishTime = value;
+                  });
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Participant Emails (comma-separated)',
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _participantEmails = value;
                   });
                 },
               ),
@@ -164,5 +185,17 @@ class _MainPageState extends State<MainPage> {
     } else {
       print('Failed to save event');
     }
+  }
+
+  void _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('jwtToken');
+
+    // Navigate to the login page
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (route) => false,
+    );
   }
 }
