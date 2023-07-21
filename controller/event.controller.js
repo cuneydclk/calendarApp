@@ -7,7 +7,10 @@ exports.saveEvent = async(req, res, next)=>{
 
         const successRes = await EventService.saveEvent(email, eventTitle, startTime, finishTime);
 
-        res.json({status:true, success:"Event saved succesfully" });
+        // Extract the eventID from the savedEvent result
+        const eventID = successRes._id;
+
+        res.json({status:true, success:"Event saved succesfully" , eventID});
     }catch(error){
         throw error
     }

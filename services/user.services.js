@@ -27,6 +27,19 @@ class UserService{
         static async generateToken(tokenData, secretKey,jwt_expire){
             return jwt.sign(tokenData, secretKey, {expiresIn:jwt_expire});
         }
+
+        static async getUserIdByEmail(email) {
+            try {
+                const user = await UserModel.findOne({ email });
+                if (user) {
+                    return user._id; // Return the user's _id field if found
+                } else {
+                    return null; // If user not found, return null
+                }
+            } catch (error) {
+                throw error;
+            }
+        }
 }
 
 module.exports = UserService;
