@@ -11,8 +11,8 @@ exports.saveEvent = async(req, res, next)=>{
         res.json({status:true, success:"Event saved succesfully"});
     }catch(error){
         throw error
-    };
-
+    }
+}
 exports.getEventId = async (req, res, next) => {
     try {
         const { email, startTime } = req.query;
@@ -32,4 +32,3 @@ exports.getEventId = async (req, res, next) => {
         throw error;
     }
     }
-}
