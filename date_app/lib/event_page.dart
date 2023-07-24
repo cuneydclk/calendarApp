@@ -14,47 +14,19 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   List<dynamic> events = []; // List to store events
-  String userEmail = ''; // Variable to store the user's email
 
   @override
   void initState() {
     super.initState();
-    _fetchUserEmailFromToken(); // Fetch user's email from the JWT token
+    _fetchEvents(); // Fetch events when the page is loaded
   }
 
-  Future<void> _fetchUserEmailFromToken() async {
+  Future<void> _fetchEvents() async {
+    // Get the user ID from the JWT token
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    String email = jwtDecodedToken['email'];
+    String userID = jwtDecodedToken['userID'];
 
-    setState(() {
-      userEmail = email;
-    });
-
-    _fetchUserIDAndEvents(); // Fetch UserID and events after getting the email
-  }
-
-  Future<void> _fetchUserIDAndEvents() async {
-    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    String email = jwtDecodedToken['email'];
-
-    // Fetch UserID using the 'getUserId' route
-    final response = await http.get(
-      Uri.parse(
-          'https://calenderapp.onrender.com/getUserId?email=$email'), // Replace with your API URL
-      headers: {'Authorization': 'Bearer ${widget.token}'},
-    );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = json.decode(response.body);
-      String userID = data['userId'];
-      _fetchEvents(userID); // Fetch events after getting the UserID
-    } else {
-      print('Failed to get UserID');
-    }
-  }
-
-  Future<void> _fetchEvents(String userID) async {
-    // Fetch events for the user by UserID
+    // Fetch events for the user by userID
     final response = await http.get(
       Uri.parse(
           'https://your-api-url/events/user/$userID'), // Replace with your API URL
@@ -77,30 +49,33 @@ class _EventPageState extends State<EventPage> {
       appBar: AppBar(
         title: Text('Event Page'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.blue,
-            child: Text(
-              'Events of $userEmail',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+      body: ListView.builder(
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          return _buildEventCard(events[index]);
+        },
+      ),
+    );
+  }
+
+  Widget _buildEventCard(dynamic event) {
+    return Card(
+      margin: EdgeInsets.all(8),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Event Title: ${event['eventTitle']}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(events[index]['eventTitle']),
-                  subtitle: Text('Start Time: ${events[index]['startTime']}'),
-                  // Add more event details here as needed
-                );
-              },
-            ),
-          ),
-        ],
+            SizedBox(height: 8),
+            Text('Start Time: ${event['startTime']}'),
+            Text('Finish Time: ${event['finishTime']}'),
+            // Add more event details here as needed
+          ],
+        ),
       ),
     );
   }

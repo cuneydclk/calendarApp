@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EventPage(),
+                    builder: (context) => EventPage(token: widget.token),
                   ),
                 );
               },
