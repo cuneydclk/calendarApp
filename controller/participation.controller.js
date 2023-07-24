@@ -23,3 +23,22 @@ exports.getUnapprovedUsers = async (req, res, next) => {
     throw error;
   }
 }
+
+exports.getEventsByUserID = async (req, res, next) => {
+  try {
+    const { userID } = req.params;
+
+    // Get the eventIDs for the user based on their userID
+    const userParticipations = await ParticipationService.getEventsByUserID(userID);
+    const eventIDs = userParticipations.map(participation => participation.eventID);
+
+    // Find the events based on their IDs
+    const events = await EventModel.find({ _id: { $in: eventIDs } });
+
+    res.json({ status: true, events });
+  } catch (error) {
+    throw error;
+  }
+}
+
+

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart';
-
+import 'event_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -27,6 +27,7 @@ class _MainPageState extends State<MainPage> {
   String? _finishTime;
 
   late String email;
+  late String? _participantEmails;
 
   @override
   void initState() {
@@ -46,6 +47,38 @@ class _MainPageState extends State<MainPage> {
             onPressed: _logout,
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              title: Text('Main Page'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                // Navigate to the main page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPage(token: widget.token),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Event Page'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                // Navigate to the event page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -182,8 +215,51 @@ class _MainPageState extends State<MainPage> {
     // Check the response status code
     if (response.statusCode == 200) {
       print('Event saved successfully');
+      _getParticipantIDs(_participantEmails!, _startTime!);
     } else {
       print('Failed to save event');
+    }
+  }
+
+  void _getParticipantIDs(String participantEmails, String startTime) async {
+    List<String> emails = participantEmails.split(',');
+    Map<String, String> participantIDs = {};
+
+    for (String email in emails) {
+      final response = await http.get(
+        Uri.parse('https://calenderapp.onrender.com/getUserId?email=$email'),
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['status'] == true) {
+          String userId = responseData['userId'];
+          participantIDs[email] = userId;
+        }
+      }
+    }
+
+    String eventSaverEmail = email;
+    String formattedStartTime =
+        startTime.replaceAll('-', '').replaceAll(':', '').substring(0, 15);
+
+    // Now, we can make the GET request to get the eventID for the event saver and start time
+    final eventResponse = await http.get(
+      Uri.parse(
+          'https://calenderapp.onrender.com/geteventId?email=$eventSaverEmail&startTime=$formattedStartTime'),
+    );
+
+    if (eventResponse.statusCode == 200) {
+      Map<String, dynamic> eventData = json.decode(eventResponse.body);
+      if (eventData['status'] == true) {
+        String eventId = eventData['eventID'];
+
+        // Now you have all the data you need: participantIDs and eventId
+        // Perform any additional actions with this data as needed
+
+        print('Participant IDs: $participantIDs');
+        print('Event ID: $eventId');
+      }
     }
   }
 
