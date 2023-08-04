@@ -40,6 +40,19 @@ class UserService{
                 throw error;
             }
         }
+
+        static async getEmailByUserId(userId) {
+            try {
+                const user = await UserModel.findOne({ userId });
+                if (user) {
+                    return user.email; 
+                } else {
+                    return null; // If user not found, return null
+                }
+            } catch (error) {
+                throw error;
+            }
+        }
 }
 
 module.exports = UserService;

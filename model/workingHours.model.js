@@ -1,32 +1,29 @@
 const mongoose = require('mongoose');
+
 const db = require('../config/db');
 
 const { Schema } = mongoose;
 
-const eventSchema = new Schema({
-  userID: {
+const workingHoursSchema = new Schema({
+  userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  eventTitle: {
-    type: String,
+  dayOfWeek: {
+    type: Number,
     required: true,
   },
   startTime: {
-    type: Date,
+    type: String,
     required: true,
   },
-  finishTime: {
-    type: Date,
+  endTime: {
+    type: String,
     required: true,
-  },
-  isApproved: {
-    type: Boolean,
-    default: false,
   },
 });
 
-const EventModel = db.model('event', eventSchema);
+const WorkingHoursModel = db.model('WorkingHours', workingHoursSchema);
 
-module.exports = EventModel;
+module.exports = WorkingHoursModel;

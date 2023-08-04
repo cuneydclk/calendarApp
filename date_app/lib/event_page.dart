@@ -24,12 +24,15 @@ class _EventPageState extends State<EventPage> {
   Future<void> _fetchEvents() async {
     // Get the user ID from the JWT token
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    String userID = jwtDecodedToken['userID'];
+    String? userID = jwtDecodedToken['email'];
+    if (userID == null) {
+      print('Failed to fetch events: User ID is null.');
+      return;
+    }
 
     // Fetch events for the user by userID
     final response = await http.get(
-      Uri.parse(
-          'https://your-api-url/events/user/$userID'), // Replace with your API URL
+      Uri.parse('http://localhost:3000/events/user/$userID'),
       headers: {'Authorization': 'Bearer ${widget.token}'},
     );
 

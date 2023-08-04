@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> register() async {
     final String apiUrl =
-        'https://calenderapp.onrender.com/registration'; // Corrected API URL
+        'http://localhost:3000/registration'; // Corrected API URL
     final Map<String, dynamic> requestData = {
       'email': emailController.text,
       'password': passwordController.text,
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> login() async {
-    final String apiUrl = 'https://calenderapp.onrender.com/login';
+    final String apiUrl = 'http://localhost:3000/login';
     final Map<String, dynamic> requestData = {
       'email': emailController.text,
       'password': passwordController.text,

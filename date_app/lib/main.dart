@@ -1,9 +1,6 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'main_page.dart';
-import 'login_page.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'home_page.dart'; // Import the HomePage widget
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,17 +16,17 @@ class MyApp extends StatelessWidget {
     @required this.token,
     Key? key,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.black,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: (token != null && JwtDecoder.isExpired(token) == false)
-            ? MainPage(token: token)
-            : LoginPage());
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.black,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: HomePage(), // Navigate to the HomePage widget
+    );
   }
 }

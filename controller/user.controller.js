@@ -60,4 +60,20 @@ exports.login = async(req, res, next)=>{
         } catch (error) {
             throw error;
         }
+    }
+        exports.getEmailByUserId = async (req, res, next) => {
+            try {
+                const { userId } = req.query; // Assuming the email will be passed as a query parameter
+        
+                // Get the userId based on the user's email
+                const email = await UserService.getEmailByUserId(userId);
+        
+                if (email) {
+                    res.status(200).json({ status: true, userId });
+                } else {
+                    res.status(404).json({ status: false, message: "User not found" });
+                }
+            } catch (error) {
+                throw error;
+            }
 }
